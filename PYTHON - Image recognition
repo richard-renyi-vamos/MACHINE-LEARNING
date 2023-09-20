@@ -1,0 +1,45 @@
+import tensorflow as tf
+from tensorflow.keras.applications.inception_v3 import InceptionV3, preprocess_input, decode_predictions
+import numpy as np
+import random
+
+# Load a pre-trained image recognition model (InceptionV3)
+image_model = InceptionV3(include_top=True, weights='imagenet')
+
+# Load the NLG part (word generation)
+# You can use libraries like NLTK or spaCy for more advanced NLG
+word_list = ["cat", "dog", "car", "tree", "house", "flower", "bird", "book", "computer", "beach"]
+nlg_model = None  # You would need to implement this part.
+
+# Function to preprocess and predict image labels
+def predict_image_labels(image_path):
+    image = tf.keras.preprocessing.image.load_img(image_path, target_size=(299, 299))
+    image = tf.keras.preprocessing.image.img_to_array(image)
+    image = preprocess_input(image)
+    image = np.expand_dims(image, axis=0)
+
+    predictions = image_model.predict(image)
+    decoded_predictions = decode_predictions(predictions, top=5)[0]
+
+    labels = [label for (_, label, _) in decoded_predictions]
+    return labels
+
+# Function to generate a sentence from image labels
+def generate_sentence_from_labels(labels):
+    words = [random.choice(word_list) for _ in range(3)]  # You can adjust the number of words
+
+    # Implement your NLG model to generate a sentence from words
+    sentence = nlg_model(words)  # You need to implement this part.
+
+    return sentence
+
+# Example usage
+image_path = 'path_to_your_image.jpg'
+image_labels = predict_image_labels(image_path)
+description = generate_sentence_from_labels(image_labels)
+
+print(f"Image Labels: {image_labels}")
+print(f"Description: {description}")
+
+
+# CREATED WITH THE HELP OF OPEN-AI CHAT GPT: https://chat.openai.com/chat
